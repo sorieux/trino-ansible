@@ -1,0 +1,107 @@
+---
+- name: Configure Trino
+  hosts: trino_coordinator:trino_workers
+
+  tasks:
+    - name: Generate SSH key for root
+      openssh_keypair:
+        path: /root/.ssh/id_rsa
+        type: rsa
+        size: 2048
+
+    - name: Check if the Trino configuration repository directory exists
+      stat:
+        path: "./tmp/trino-config"
+      delegate_to: localhost
+      run_once: true
+      register: trino_config_dir
+      tags:
+        - push_config
+
+    - name: Remove existing Trino configuration repository directory
+      file:
+        path: "./tmp/trino-config"
+        state: absent
+      delegate_to: localhost
+      run_once: true
+      tags:
+        - push_config
+      when: trino_config_dir.stat.exists
+
+    - name: Clone Trino configuration repository
+      git:
+        repo: 'https://github.com/sorieux/trino-admin-config.git'
+        dest: "./tmp/trino-config"
+      delegate_to: localhost
+      run_once: true
+      tags:
+        - push_config
+
+    - name: Synchronize coordinator configuration
+      synchronize:
+        src: "./tmp/trino-config/coordinator/"
+        dest: "/etc/trino/"
+      tags:
+        - push_config
+      when: "'trino_coordinator' in group_names"
+
+    - name: Synchronize worker configuration
+      synchronize:
+        src: "./tmp/trino-config/worker/"
+        dest: "/etc/trino/"
+      tags:
+        - push_config
+      when: "'trino_workers' in group_names"
+
+    - name: Check if the Trino catalog repository directory exists
+      stat:
+        path: "./tmp/trino-catalog"
+      delegate_to: localhost
+      register: trino_catalog_dir
+      run_once: true
+      tags:
+        - push_catalog
+
+    - name: Remove existing Trino catalog repository directory
+      file:
+        path: "./tmp/trino-catalog"
+        state: absent
+      delegate_to: localhost
+      run_once: true
+      tags:
+        - push_catalog
+      when: trino_catalog_dir.stat.exists
+
+    - name: Clone Trino catalogs
+      git:
+        repo: 'https://github.com/sorieux/trino-admin-catalog.git'
+        dest: "./tmp/trino-catalog"
+      delegate_to: localhost
+      run_once: true
+      tags:
+        - push_catalog
+
+    - name: Synchronize configuration
+      synchronize:
+        src: "./tmp/trino-catalog/"
+        dest: "/etc/trino/"
+      tags:
+        - push_catalog
+
+    - name: Start Trino service
+      command:
+        cmd: "/usr/lib/trino/bin/launcher --etc-dir /etc/trino start"
+      tags:
+        - start
+
+    - name: Restart Trino service
+      command:
+        cmd: "/usr/lib/trino/bin/launcher --etc-dir /etc/trino restart"
+      tags:
+        - restart
+
+    - name: Stop Trino service
+      command:
+        cmd: "/usr/lib/trino/bin/launcher --etc-dir /etc/trino stop"
+      tags:
+        - stop
