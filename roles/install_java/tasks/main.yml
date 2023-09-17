@@ -1,0 +1,5 @@
+---
+- name: Install Java {{ required_java_version }} if not present
+  dnf:
+    name: "java-{{ required_java_version }}-openjdk"
+    state: present

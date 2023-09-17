@@ -1,0 +1,26 @@
+---
+- name: Copy Trino tar.gz to target machine
+  copy:
+    src: ./{{ trino_version }}.tar.gz
+    dest: /tmp/{{ trino_version }}.tar.gz
+
+- name: Extract Trino archive
+  unarchive:
+    src: /tmp/{{ trino_version }}.tar.gz
+    dest: /opt/
+    remote_src: yes
+
+- name: Rename Trino directory
+  command:
+    cmd: mv /opt/{{ trino_version }} /opt/trino
+    creates: /opt/trino
+
+- name: Create Trino configuration directory
+  file:
+    path: /etc/trino
+    state: directory
+
+- name: Create Trino logs directory
+  file:
+    path: /var/trino
+    state: directory

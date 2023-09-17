@@ -1,0 +1,6 @@
+---
+trino_etc_dir: "/etc/trino"
+trino_server_log_file: "/var/trino/var/log/server.log"
+trino_launcher_log_file: "/var/trino/var/log/launcher.log"
+trino_pid_file: "/var/trino/var/run/launcher.pid"
+trino_launcher_base_cmd: "/opt/trino/bin/launcher --etc-dir {{ trino_etc_dir }} --server-log-file {{ trino_server_log_file }} --launcher-log-file {{ trino_launcher_log_file }} --pid-file {{ trino_pid_file }}"

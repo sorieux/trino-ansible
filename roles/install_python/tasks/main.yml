@@ -1,0 +1,15 @@
+---
+- name: Install Python 3 if not present
+  dnf:
+    name: python3
+    state: present
+
+- name: Check if python points to any binary
+  command: which python
+  register: which_python
+  failed_when: false
+  changed_when: false
+
+- name: Create symbolic link for python to point to python3
+  command: ln -s /usr/bin/python3 /usr/bin/python
+  when: which_python.rc != 0  # Execute this only when the above command fails, meaning python binary is not found.

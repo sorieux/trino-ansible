@@ -1,0 +1,9 @@
+---
+- name: Status Trino
+  hosts: trino_coordinator, trino_workers
+  become: yes
+  vars:
+    trino_action: "status"
+
+  roles:
+    - role: trino_service_management

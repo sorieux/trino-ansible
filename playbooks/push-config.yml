@@ -1,0 +1,12 @@
+---
+- name: Push Config
+  hosts: trino_coordinator, trino_workers
+  become: yes
+  vars:
+    repo_local_path: "{{ project_root }}/tmp/trino-config"
+    repo_url: 'https://github.com/sorieux/trino-admin-config.git'
+    repo_dest_path: "/etc/trino"
+
+  roles:
+    - role: sync_repository
+

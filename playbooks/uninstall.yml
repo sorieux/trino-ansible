@@ -1,0 +1,14 @@
+---
+- name: Uninstall Trino
+  hosts: trino_coordinator, trino_workers
+  become: yes
+  vars:
+    trino_action: "stop"
+  roles:
+    - role: trino_service_management
+    - role: uninstall_trino
+
+
+
+
+

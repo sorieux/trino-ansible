@@ -1,0 +1,9 @@
+---
+- name: Restart Trino
+  hosts: trino_coordinator, trino_workers
+  become: yes
+  vars:
+    trino_action: "restart"
+
+  roles:
+    - role: trino_service_management

@@ -1,0 +1,22 @@
+---
+- name: Manage Start Trino Service
+  hosts: trino_coordinator, trino_workers
+  become: yes
+  tasks:
+    - name: Check Trino status
+      include_role:
+        name: trino_service_management
+      vars:
+        trino_action: "status"
+
+    - name: Fail if Trino is already running
+      fail:
+        msg: "Trino is already running. Use the restart playbook instead, or stop and start."
+      when: trino_is_running is defined and trino_is_running
+
+    - name: Start Trino if not running
+      include_role:
+        name: trino_service_management
+      vars:
+        trino_action: "start"
+      when: trino_is_running is not defined or not trino_is_running

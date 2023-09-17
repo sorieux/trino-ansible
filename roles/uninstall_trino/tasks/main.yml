@@ -1,0 +1,9 @@
+---
+- name: Remove Trino files and directories
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - "/opt/trino"
+    - "/etc/trino"
+    - "/var/log/trino"

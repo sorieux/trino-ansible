@@ -1,24 +1,23 @@
 version: "3.9"
 services:
   trino-coordinator:
+    image: almalinux-ssh
     ports:
       - "8080:8080"
       - "2220:22"
 
-    image: custom-trino-ssh
-
   trino-worker-1:
-    image: custom-trino-ssh 
+    image: almalinux-ssh
     ports:
       - "2221:22"
 
   trino-worker-2:
-    image: custom-trino-ssh 
+    image: almalinux-ssh
     ports:
       - "2222:22"
 
   trino-worker-3:
-    image: custom-trino-ssh 
+    image: almalinux-ssh
     ports:
       - "2223:22"
 
@@ -28,8 +27,8 @@ services:
     image: postgres:11
     container_name: postgres
     environment:
-      POSTGRES_USER: dbt-trino
-      POSTGRES_PASSWORD: dbt-trino
+      POSTGRES_USER: trino
+      POSTGRES_PASSWORD: trino
 
   metastore_db:
     image: postgres:11
@@ -98,4 +97,4 @@ services:
 
 networks:
   default:
-    name: dbt-net
+    name: trino-net

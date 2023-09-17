@@ -1,0 +1,23 @@
+---
+- name: Execute Trino service action {{ trino_action }}
+  command:
+    cmd: "{{ trino_launcher_base_cmd }} {{ trino_action }}"
+  when: trino_action in ['start', 'stop', 'restart']
+
+- name: Get Trino service status
+  command:
+    cmd: "{{ trino_launcher_base_cmd }} status"
+  register: trino_status
+  changed_when: false
+  failed_when: trino_status.rc != 0 and trino_status.rc != 3
+  when: trino_action == "status"
+
+- name: Set fact for Trino running status
+  set_fact:
+    trino_is_running: "{{ trino_status.stdout is regex('^Running') }}"
+  when: trino_action == "status"
+
+- debug:
+    msg: "{{ trino_status.stdout }}"
+  when: trino_action == "status"
+

@@ -1,0 +1,14 @@
+---
+- name: Install Trino and its requirements
+  hosts: all
+  become: yes
+  vars:
+    required_java_version: "17"
+    trino_version: "trino-server-426"
+
+  roles:
+    - role: uninstall_trino
+    - role: install_java
+    - role: install_python
+    - role: install_rsync
+    - role: install_trino

@@ -1,0 +1,46 @@
+---
+- name: Remove existing repository directory
+  file:
+    path: "{{ repo_local_path }}"
+    state: absent
+  delegate_to: localhost
+  become: no
+  run_once: true
+
+- name: Clone repository
+  git:
+    repo: "{{ repo_url }}"
+    dest: "{{ repo_local_path }}"
+  delegate_to: localhost
+  become: no
+  run_once: true
+
+- name: Synchronize configuration for /etc/trino/catalog
+  synchronize:
+    src: "{{ repo_local_path }}/"
+    dest: "{{ repo_dest_path }}"
+    delete: yes
+  when: repo_dest_path == "/etc/trino/catalog"
+
+- name: Synchronize configuration for coordinator /etc/trino
+  synchronize:
+    src: "{{ repo_local_path }}/coordinator/"
+    dest: "{{ repo_dest_path }}"
+  when:
+    - repo_dest_path == "/etc/trino"
+    - "'trino_coordinator' in group_names"
+
+- name: Synchronize configuration for worker /etc/trino
+  synchronize:
+    src: "{{ repo_local_path }}/worker/"
+    dest: "{{ repo_dest_path }}"
+  when:
+    - repo_dest_path == "/etc/trino"
+    - "'trino_workers' in group_names"
+
+- name: Synchronize and delete files excluding /etc/trino/catalog
+  command:
+    cmd: "rsync -av --delete --exclude=/etc/trino/catalog/* {{ repo_dest_path }}"
+  when:
+    - repo_dest_path == "/etc/trino"
+
