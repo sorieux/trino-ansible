@@ -4,7 +4,7 @@
   become: yes
   vars:
     repo_local_path: "{{ project_root }}/tmp/trino-catalog"
-    repo_url: 'https://github.com/sorieux/trino-admin-catalog.git'
+    repo_url: "{{ catalog_repo_url }}"
     repo_dest_path: "/etc/trino/catalog"
 
   roles:

@@ -1,0 +1,7 @@
+---
+ansible_user: root
+ansible_password: root
+ansible_host: 127.0.0.1
+project_root: "{{ playbook_dir }}/.."
+catalog_repo_url: 'https://github.com/sorieux/trino-catalog-example.git'
+config_repo_url: 'https://github.com/sorieux/trino-config-example.git'
