@@ -48,7 +48,7 @@ Below is a brief outline of the project's directory structure, highlighting the 
 1. **Clone the Repository:** `git clone https://github.com/sorieux/trino-ansible.git`
 1. **Navigate:** `cd trino-ansible`
 1. **Modify Variables:** Check group_vars/all.yml and adjust the variables as necessary. If you're using custom repositories for configuration, update the repository addresses. Alternatively, you can use the provided example repositories with addresses already specified.
-1. **Running Playbooks:** Use the command `ansible-playbook playbooks/[playbook-name].yml` to execute a specific playbook.
+1. **Running Playbooks:** Use the command `ansible-playbook -i production playbooks/[playbook-name].yml` to execute a specific playbook.
 
 ## Setup Instructions
 
